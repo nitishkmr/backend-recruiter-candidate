@@ -15,10 +15,14 @@ const getDashboard = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
   /* search for candidates who have applied to current recruiter's jobs */
   const recruiterJobsList = await AppliedJob.find({ recruiterId: user._id });
+
   const appliedCandidatesList = [];
   if (recruiterJobsList.length > 0) {
     recruiterJobsList.map(job => {
-      appliedCandidatesList.push(job.candidateId);
+      appliedCandidatesList.push({
+        candidateId: job.candidateId,
+        jobId: job.jobId,
+      });
     });
     res.json({ appliedCandidatesList });
   } else {

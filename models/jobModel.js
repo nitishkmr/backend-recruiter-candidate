@@ -29,7 +29,7 @@ const jobSchema = mongoose.Schema(
       default: 0,
     },
     isActive: {
-      // status: Open (true), Close (false)
+      // status: Open (true), Closed (false)
       type: Boolean,
       require: true,
       default: true,
