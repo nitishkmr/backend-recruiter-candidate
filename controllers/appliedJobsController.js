@@ -9,7 +9,7 @@ const apply = asyncHandler(async (req, res) => {
   // will receive user obj in 'req.user' if user is authenticated
   if (req.user.isRecruiter) {
     res.status(401);
-    throw new Error('Only candidates can apply for a job');
+    throw new Error('Unauthorized');
   }
   // considering that array of job ids to be applied to will be received in this api.
   const { jobIds } = req.body;

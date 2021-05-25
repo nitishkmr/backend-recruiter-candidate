@@ -1,6 +1,5 @@
 const generateToken = require('../utils/generateToken');
 const User = require('../models/userModel');
-const AppliedJob = require('../models/appliedJobModel');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 
@@ -62,56 +61,4 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc Get user dashboard
-// @route POST /api/users/dashboard
-// @access Private
-const getDashboard = asyncHandler(async (req, res) => {
-  // will receive user obj in req if user is authenticated
-  const user = await User.findById(req.user._id);
-  const isRecruiter = user.isRecruiter;
-  console.log(isRecruiter);
-
-  if (isRecruiter) {
-    /* search for candidates who have applied to current recruiter's jobs */
-    const recruiterJobsList = await AppliedJob.find({ recruiterId: user._id });
-    const appliedCandidatesList = [];
-    if (recruiterJobsList.length > 0) {
-      recruiterJobsList.map(job => {
-        appliedCandidatesList.push(job.candidateId);
-      });
-      res.json({ appliedCandidatesList });
-    } else {
-      res.status(404);
-      throw new Error('No candidates found');
-    }
-  } else {
-    // If a candidate is logged in
-    const appliedList = await AppliedJob.find({ candidateId: user._id });
-    const appliedJobsList = [];
-    if (appliedList.length > 0) {
-      appliedList.map(appliedJob => {
-        appliedJobsList.push({
-          jobId: appliedJob.jobId,
-          status: appliedJob.status,
-        });
-      });
-      res.json(appliedJobsList);
-    } else {
-      res.status(404);
-      throw new Error('No applied jobs found');
-    }
-  }
-
-  if (user) {
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isRecruiter: user.isRecruiter,
-    });
-  } else {
-    res.status(404);
-    throw new Error('User not found');
-  }
-});
-module.exports = { loginUser, registerUser, getDashboard };
+module.exports = { loginUser, registerUser };
