@@ -69,9 +69,10 @@ const makeDecision = asyncHandler(async (req, res) => {
   const { jobId, candidateId, candidateAccepted } = req.body; // considering that job and candidate details will be received in the post req to this api.
 
   const appliedJob = await AppliedJob.findOne({ jobId, candidateId }); // get the job <-> candidate relationship from AppliedJob collection
-  const job = await Job.findOne({ jobId }); // get the job details from Job collection
+  const job = await Job.findOne({ _id: jobId }); // get the job details from Job collection
   let numOfVacancies = job.numOfVacancies;
   let filledVacancies = job.filledVacancies;
+  console.log(appliedJob);
 
   let updateAppliedJob;
   let updateJob;
@@ -100,7 +101,7 @@ const makeDecision = asyncHandler(async (req, res) => {
     });
 
     // make modifications in the Job collection
-    const updatedJob = await Job.findOneAndUpdate({ jobId }, updateJob, { new: true });
+    const updatedJob = await Job.findOneAndUpdate({ _id: jobId }, updateJob, { new: true });
 
     if (updatedAppliedJob && updatedJob) {
       res.status(201).json({
