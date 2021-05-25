@@ -73,8 +73,12 @@ const getDashboard = asyncHandler(async (req, res) => {
   if (isRecruiter) {
     /* search for candidates who have applied to current recruiter's jobs */
     const recruiterJobsList = await AppliedJob.find({ recruiterId: user._id });
+    const appliedCandidatesList = [];
     if (recruiterJobsList.length > 0) {
-      console.log(recruiterJobsList);
+      recruiterJobsList.map(job => {
+        appliedCandidatesList.push(job.candidateId);
+      });
+      res.status(200).json({ appliedCandidatesList });
     } else {
       res.status(404);
       throw new Error('No candidates found');
