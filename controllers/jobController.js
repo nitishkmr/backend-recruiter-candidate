@@ -56,49 +56,43 @@ const decision = asyncHandler(async (req, res) => {
 
   const { jobId, candidateId, candidateAccepted } = req.body; // considering that job and candidate details will be received in the post req to this api.
 
-  const appliedJob = await AppliedJob.findOne({ jobId, candidateId });  // get the job <-> candidate relationship from AppliedJob collection
-  const job = await Job.findOne({jobId});     // get the job details from Job collection
+  const appliedJob = await AppliedJob.findOne({ jobId, candidateId }); // get the job <-> candidate relationship from AppliedJob collection
+  const job = await Job.findOne({ jobId }); // get the job details from Job collection
   let numOfVacancies = job.numOfVacancies;
   let filledVacancies = job.filledVacancies;
 
-  const updateAppliedJob;
-  const updateJob;
+  let updateAppliedJob;
+  let updateJob;
 
-  if(appliedJob){
-    if(candidateAccepted){
+  if (appliedJob) {
+    if (candidateAccepted) {
       // update appliedJob collection
-      updateAppliedJob = {status: "Accepted"};
-     
+      updateAppliedJob = { status: 'Accepted' };
+
       // update job collection
-      if(filledVacancies < numOfVacancies){
+      if (filledVacancies < numOfVacancies) {
         filledVacancies = filledVacancies + 1;
-        updateJob = {filledVacancies};
+        updateJob = { filledVacancies };
       }
-      if(filledVacancies === numOfVacancies){
+      if (filledVacancies === numOfVacancies) {
         // mark job as Close
-        updateJob = { filledVacancies, isActive:false}
+        updateJob = { filledVacancies, isActive: false };
       }
-    }else{
-      updateAppliedJob = {status: "Rejected"};
+    } else {
+      updateAppliedJob = { status: 'Rejected' };
     }
-    
+
     // make modifications in the AppliedJob collection
-    const updatedAppliedJob = await AppliedJob.findOneAndUpdate(
-      { jobId, candidateId },
-      updateAppliedJob,
-      { new: true }
-    )
+    const updatedAppliedJob = await AppliedJob.findOneAndUpdate({ jobId, candidateId }, updateAppliedJob, {
+      new: true,
+    });
 
     // make modifications in the Job collection
-    const updatedJob = await Job.findOneAndUpdate(
-      { jobId },
-      updateJob,
-      { new: true }
-    )
+    const updatedJob = await Job.findOneAndUpdate({ jobId }, updateJob, { new: true });
 
     if (updatedAppliedJob && updatedJob) {
       res.status(201).json({
-        message: "Response submitted"
+        message: 'Response submitted',
       });
     } else {
       res.status(400);

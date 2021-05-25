@@ -9,7 +9,7 @@ const asyncHandler = require('express-async-handler');
 // @access Public (no token req)
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body; // considering that email and password will be received in the post req to this api.
-  console.log(email + ' ' + password);
+  // console.log(email + ' ' + password);
   const user = await User.findOne({ email });
   if (user && (await bcrypt.compare(password, user.password))) {
     res.json({
@@ -69,6 +69,7 @@ const getDashboard = asyncHandler(async (req, res) => {
   // will receive user obj in req if user is authenticated
   const user = await User.findById(req.user._id);
   const isRecruiter = user.isRecruiter;
+  console.log(isRecruiter);
 
   if (isRecruiter) {
     /* search for candidates who have applied to current recruiter's jobs */
@@ -78,7 +79,7 @@ const getDashboard = asyncHandler(async (req, res) => {
       recruiterJobsList.map(job => {
         appliedCandidatesList.push(job.candidateId);
       });
-      res.status(200).json({ appliedCandidatesList });
+      res.json({ appliedCandidatesList });
     } else {
       res.status(404);
       throw new Error('No candidates found');
@@ -86,8 +87,15 @@ const getDashboard = asyncHandler(async (req, res) => {
   } else {
     // If a candidate is logged in
     const appliedList = await AppliedJob.find({ candidateId: user._id });
+    const appliedJobsList = [];
     if (appliedList.length > 0) {
-      console.log(appliedList);
+      appliedList.map(appliedJob => {
+        appliedJobsList.push({
+          jobId: appliedJob.jobId,
+          status: appliedJob.status,
+        });
+      });
+      res.json(appliedJobsList);
     } else {
       res.status(404);
       throw new Error('No applied jobs found');
