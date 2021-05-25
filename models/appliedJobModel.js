@@ -24,7 +24,7 @@ const appliedJobSchema = mongoose.Schema(
       default: 'Pending',
     },
     isActive: {
-      /* for soft delete, if required */
+      /* for soft delete, if required in future */
       type: Boolean,
       require: true,
       default: true,
