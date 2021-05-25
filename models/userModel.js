@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 
 const userSchema = mongoose.Schema(
   {
@@ -16,8 +15,12 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    isRecruiter: {
+      type: Boolean,
+      require: true,
+    },
     isActive: {
-      type: boolean,
+      type: Boolean,
       require: true,
       default: true,
     },

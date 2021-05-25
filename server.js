@@ -13,6 +13,8 @@ connectDB();
 /* API Routes */
 app.use('/', homeRoute);
 app.use('/api/users', userRoutes);
+// app.use('/api/job', jobRoutes);
+// app.use('/api/candidate', userRoutes);
 
 /* Error Control */
 app.use(notFound);

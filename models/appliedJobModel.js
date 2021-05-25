@@ -7,6 +7,11 @@ const appliedJobSchema = mongoose.Schema(
       required: true,
       ref: 'User',
     },
+    recruiterId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
     jobId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -20,7 +25,7 @@ const appliedJobSchema = mongoose.Schema(
     },
     isActive: {
       /* for soft delete, if required */
-      type: boolean,
+      type: Boolean,
       require: true,
       default: true,
     },
