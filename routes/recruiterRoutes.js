@@ -1,12 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { getDashboard } = require('../controllers/userController');
+const { postJob } = require('../controllers/jobController');
 const protect = require('../middleware/authMiddleware');
-const protectRecruiter = require('../middleware/authMiddleware');
 
 router.get('/dashboard', protect, getDashboard);
-router.post('/postjob');
-router.post('/login');
-router.get('/dashboard', protectRecruiter);
+router.post('/post-job', protect, postJob);
 
 module.exports = router;
